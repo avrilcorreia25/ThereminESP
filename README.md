@@ -302,5 +302,133 @@ Se utilizarán los siguientes parámetros:
 | TC-010 | RNF-02 | Verificar comunicación UART |
 
 ---
+---
+# Detalle de Componentes – ThereminESP
+
+## 1. Microcontrolador principal
+**ESP32 DevKit**
+
+Es la unidad central del sistema. Se encarga de:
+- leer los sensores ultrasónicos
+- procesar la información de las manos
+- generar la señal de audio mediante DAC
+- controlar la pantalla OLED
+- gestionar los botones
+- enviar logs por UART a la GUI
+
+**Función en el proyecto:** procesamiento principal y control general del sistema.
+
+---
+
+## 2. Sensores de entrada
+**Sensores ultrasónicos HC-SR04 (x2)**
+
+Se utilizan para detectar la posición de las manos del usuario sin contacto físico.
+
+- Sensor izquierdo: controla la frecuencia o nota del sonido
+- Sensor derecho: controla el timbre o brillo del sonido
+
+**Rango operativo:** 5 cm – 80 cm  
+**Función en el proyecto:** entrada gestual del sistema.
+
+---
+
+## 3. Pantalla de visualización
+**Pantalla OLED SSD1306 128×64 (I2C)**
+
+Se comunica con el ESP32 mediante protocolo I2C (SDA, SCL). Permite mostrar información en tiempo real.
+
+Muestra:
+- frecuencia o nota
+- forma de onda activa
+- estado del sistema
+
+**Función en el proyecto:** interfaz visual para el usuario.
+
+---
+
+## 4. Actuador de audio
+**DAC interno del ESP32 (GPIO25)**
+
+El ESP32 genera la señal de audio de forma digital y la convierte a señal analógica mediante su DAC interno.
+
+**Función en el proyecto:** generación de señal de audio base.
+
+---
+
+## 5. Amplificador de audio
+**Módulo PAM8403**
+
+Amplifica la señal de audio proveniente del ESP32 para poder reproducirse en un parlante.
+
+- Alimentación: 5V
+- Entrada: señal analógica desde el DAC (con capacitor de acople)
+- Salida: señal diferencial (OUT+ y OUT-)
+
+**Función en el proyecto:** amplificación de audio.
+
+---
+
+## 6. Parlante
+**Parlante pasivo 8Ω – 3W**
+
+Se conecta a la salida del PAM8403 (OUT+ y OUT-).
+
+- Tipo: pasivo (sin amplificador interno)
+- Impedancia: 8Ω
+- Potencia: 3W
+
+**Función en el proyecto:** reproducción del sonido generado.
+
+---
+
+## 7. Botones de control
+**Botones físicos (x2)**
+
+Se utilizan para seleccionar la forma de onda del sistema.
+
+- Botón A: cambio de modo de onda
+- Botón B: cambio de tipo de señal
+
+Configurados como entrada digital con pull-up interno.
+
+**Función en el proyecto:** interacción del usuario.
+
+---
+
+## 8. Interfaz de comunicación
+**UART (ESP32 ↔ PC)**
+
+Permite la comunicación con una GUI desarrollada en Python.
+
+- Velocidad: 115200 baud
+- Uso: envío de logs y monitoreo del sistema
+
+**Función en el proyecto:** visualización avanzada y depuración.
+
+---
+
+## 9. Elementos adicionales
+
+### Resistencias (divisor de voltaje)
+Se utilizan para adaptar la señal ECHO de los sensores ultrasónicos de 5V a 3.3V, evitando daños al ESP32.
+
+### Capacitor de acople (≈1 µF)
+Ubicado entre el DAC del ESP32 y la entrada del PAM8403 para eliminar componente DC de la señal de audio.
+
+### Fuente de alimentación (5V)
+Alimenta:
+- ESP32 (VIN)
+- sensores ultrasónicos
+- amplificador PAM8403
+
+La pantalla OLED se alimenta con 3.3V desde el ESP32.
+
+---
+
+## 10. Resumen del sistema
+
+El sistema ThereminESP integra sensores ultrasónicos, procesamiento digital en el ESP32, generación y amplificación de audio, visualización en pantalla OLED y comunicación con una GUI, permitiendo generar música en tiempo real mediante gestos sin contacto físico.
+
 
 
